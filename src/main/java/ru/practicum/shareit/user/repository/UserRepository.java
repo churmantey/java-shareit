@@ -5,4 +5,6 @@ import ru.practicum.shareit.user.model.User;
 
 public interface UserRepository extends BaseRepository<User> {
 
+    User getUserByEmail (String email);
+
 }

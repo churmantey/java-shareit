@@ -18,6 +18,13 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage(), "Bad request");
     }
 
+    @ExceptionHandler({NotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(final RuntimeException e) {
+        log.error("Got 404 status Not found {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage(), "Not found");
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleRuntimeException(final RuntimeException e) {
