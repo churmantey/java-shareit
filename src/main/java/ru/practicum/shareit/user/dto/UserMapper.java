@@ -1,7 +1,7 @@
 package ru.practicum.shareit.user.dto;
 
 import org.mapstruct.Mapper;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.User;
 
 import java.util.List;
 
@@ -13,6 +13,7 @@ public interface UserMapper {
     public UserDto userToDto (User user);
 
     public List<User> dtoListToUserList (List<UserDto> userDto);
+
     public List<UserDto> userListToDtoList (List<User> userDto);
 
 }

@@ -1,14 +1,14 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.item;
 
 import lombok.Data;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.user.User;
 
 /**
  * TODO Sprint add-controllers.
  */
 @Data
-public class ItemDto {
+public class Item {
     private Long id;
     private String name;
     private String description;

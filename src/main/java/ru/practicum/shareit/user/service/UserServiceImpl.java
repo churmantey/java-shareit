@@ -6,7 +6,7 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.general.IdGenerator;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
@@ -43,18 +43,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto updatedUserDto) {
-        return null;
+        validateUser(updatedUserDto);
+        User user = userRepository.getElement(updatedUserDto.getId());
+        if (updatedUserDto.getName() != null
+                && !updatedUserDto.getName().isBlank()) user.setName(updatedUserDto.getName());
+        if (updatedUserDto.getEmail() != null
+                &&!updatedUserDto.getEmail().isBlank()) user.setEmail(updatedUserDto.getEmail());
+        return userMapper.userToDto(
+            userRepository.updateElement(user)
+        );
     }
 
     @Override
     public void deleteUserById(Long userId) {
-
+        User user = userRepository.getElement(userId);
+        userRepository.deleteElementById(user.getId());
     }
 
     private void validateUser(UserDto userDto) {
-        User existingUser = userRepository.getUserByEmail(userDto.getEmail());
-        if (existingUser != null && !Objects.equals(existingUser.getId(), userDto.getId())) {
-            throw new ValidationException("User email already in use");
+        if (userDto.getEmail() != null) {
+            User existingUser = userRepository.getUserByEmail(userDto.getEmail());
+            if (existingUser != null && !Objects.equals(existingUser.getId(), userDto.getId())) {
+                throw new ValidationException("User email already in use");
+            }
         }
     }
+
 }
