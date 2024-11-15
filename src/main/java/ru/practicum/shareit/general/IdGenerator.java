@@ -1,6 +1,5 @@
 package ru.practicum.shareit.general;
 
-import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

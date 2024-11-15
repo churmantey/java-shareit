@@ -32,9 +32,9 @@ public class InMemoryItemRepository implements ItemRepository {
     }
 
     @Override
-    public Item updateElement(Item newItem) {
-        itemStorage.put(newItem.getId(),newItem);
-        return newItem;
+    public Item updateElement(Item updatedItem) {
+        itemStorage.put(updatedItem.getId(), updatedItem);
+        return updatedItem;
     }
 
     @Override
@@ -51,6 +51,22 @@ public class InMemoryItemRepository implements ItemRepository {
     public List<Item> getAllElements() {
         return itemStorage.values().stream()
                 .sorted(Comparator.comparingLong(Item::getId))
+                .toList();
+    }
+
+    @Override
+    public List<Item> findAvailableItemsByNameOrDescription(String substring) {
+        return itemStorage.values().stream()
+                .filter(item -> item.getAvailable()
+                        && (item.getName().toLowerCase().contains(substring.toLowerCase())
+                        || item.getDescription().toLowerCase().contains(substring.toLowerCase())))
+                .toList();
+    }
+
+    @Override
+    public List<Item> findItemsByOwner(Long userId) {
+        return itemStorage.values().stream()
+                .filter(item -> item.getOwner().equals(userId))
                 .toList();
     }
 }

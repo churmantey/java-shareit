@@ -10,6 +10,10 @@ public interface ItemService {
 
     List<ItemDto> getAllItems();
 
+    List<ItemDto> getItemsByOwner(Long userId);
+
+    List<ItemDto> findAvailableItemsByText(String searchQuery);
+
     ItemDto createItem(ItemDto itemDto);
 
     ItemDto updateItem(ItemDto updatedItemDto);
