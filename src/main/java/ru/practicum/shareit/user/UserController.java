@@ -31,7 +31,6 @@ public class UserController {
     public UserDto updateUser(@Positive @PathVariable Long userId,
                               @RequestBody UserDto userDto) {
         log.info("UPDATE user id = {}, {}", userId, userDto);
-        UserDto existingUser = userService.getUser(userId);
         userDto.setId(userId);
         return userService.updateUser(userDto);
     }

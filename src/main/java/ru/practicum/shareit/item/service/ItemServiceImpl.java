@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.AccessException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.general.IdGenerator;
@@ -56,6 +57,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto updateItem(ItemDto updatedItemDto) {
         Item item = itemRepository.getElement(updatedItemDto.getId());
+        if (!item.getOwner().equals(updatedItemDto.getOwner())) {
+            throw new AccessException("User with id = " + updatedItemDto.getOwner() +
+                    " can't update item with id = " + updatedItemDto.getId());
+        }
         if (updatedItemDto.getName() != null
                 && !updatedItemDto.getName().isBlank()) item.setName(updatedItemDto.getName());
         if (updatedItemDto.getDescription() != null

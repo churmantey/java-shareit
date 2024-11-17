@@ -13,6 +13,8 @@ public class User {
 
     @Positive
     private Long id;
+
+    @NotBlank
     private String name;
 
     @Email

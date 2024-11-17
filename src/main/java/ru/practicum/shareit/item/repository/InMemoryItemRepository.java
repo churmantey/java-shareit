@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.Item;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class InMemoryItemRepository implements ItemRepository {
         if (itemId == null) {
             throw new ValidationException("Item id of null received");
         }
-        if (itemStorage.containsKey(itemId)) return itemStorage.get(itemId);
-        else throw new NotFoundException("Item with id = " + itemId + " not found");
+        return Optional.ofNullable(itemStorage.get(itemId)).orElseThrow(
+                () -> new NotFoundException("Item with id = " + itemId + " not found"));
     }
 
     @Override
@@ -42,9 +43,8 @@ public class InMemoryItemRepository implements ItemRepository {
         if (itemId == null) {
             throw new ValidationException("Item id of null received");
         }
-        if (itemStorage.containsKey(itemId)) itemStorage.remove(itemId);
-        else throw new NotFoundException("Item with id = " + itemId + " not found");
-
+        Item item = Optional.ofNullable(itemStorage.remove(itemId)).orElseThrow(
+                () -> new NotFoundException("Item with id = " + itemId + " not found"));
     }
 
     @Override

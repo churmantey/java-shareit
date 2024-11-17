@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.User;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         if (userId == null) {
             throw new ValidationException("User id of null received");
         }
-        if (userStorage.containsKey(userId)) return userStorage.get(userId);
-        else throw new NotFoundException("User with id = " + userId + " not found");
+        return Optional.ofNullable(userStorage.get(userId)).orElseThrow(
+                () -> new NotFoundException("User with id = " + userId + " not found"));
     }
 
     @Override
@@ -42,8 +43,8 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         if (userId == null) {
             throw new ValidationException("User id of null received");
         }
-        if (userStorage.containsKey(userId)) userStorage.remove(userId);
-        else throw new NotFoundException("User with id = " + userId + " not found");
+        User user = Optional.ofNullable(userStorage.remove(userId)).orElseThrow(
+                () -> new NotFoundException("User with id = " + userId + " not found"));
     }
 
     @Override
