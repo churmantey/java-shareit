@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.DuplicateException;
@@ -7,6 +8,7 @@ import ru.practicum.shareit.general.IdGenerator;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.repository.UserJpaRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
@@ -14,20 +16,21 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final IdGenerator idGenerator;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
     public UserDto getUser(Long userId) {
-        return userMapper.userToDto(userRepository.getElement(userId));
+        return userMapper.userToDto(userRepository.findById(userId));
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        return userMapper.userListToDtoList(userRepository.getAllElements());
+        return userMapper.userListToDtoList(userRepository.findAllOrderByIdAsc());
     }
 
     @Override
