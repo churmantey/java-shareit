@@ -3,10 +3,11 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.repository.BookingJpaRepository;
 import ru.practicum.shareit.exception.AccessException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.general.IdGenerator;
+import ru.practicum.shareit.general.LastNextBookingDates;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
@@ -14,6 +15,7 @@ import ru.practicum.shareit.item.repository.ItemJpaRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +24,17 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
 
-    private final IdGenerator idGenerator;
     private final ItemJpaRepository itemRepository;
     private final ItemMapper itemMapper;
     private final UserService userService;
+    private final BookingJpaRepository bookingRepository;
 
     @Override
     public ItemDto getItem(Long itemId) {
-        return itemMapper.itemToDto(itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotFoundException("Item not found, " + itemId)));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Item not found, " + itemId));
+        fillComments(item);
+        return itemMapper.itemToDto(item);
     }
 
     @Override
@@ -43,6 +47,10 @@ public class ItemServiceImpl implements ItemService {
         UserDto userDto = userService.getUser(userId);
         return itemMapper.itemListToDtoList(
                 itemRepository.findAllByOwnerOrderByIdAsc(userDto.getId())
+                        .stream()
+                        .peek(this::fillBookingDates)
+                        .peek(this::fillComments)
+                        .toList()
         );
     }
 
@@ -104,6 +112,18 @@ public class ItemServiceImpl implements ItemService {
                 throw new NotFoundException("Item owner with id = " + item.getOwner() + " not found");
             }
         }
+    }
+
+    private void fillComments(Item item) {
+        item.setComments(new ArrayList<>());
+    }
+    private void fillBookingDates(Item item) {
+        LastNextBookingDates dates = bookingRepository.getLastNextBookingDatesByItemId(
+                item.getId(),
+                LocalDateTime.now()
+        );
+        item.setLastBooking(dates.getLastBooking());
+        item.setNextBooking(dates.getNextBooking());
     }
 
 }

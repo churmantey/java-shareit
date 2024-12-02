@@ -10,6 +10,8 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
 
+import static ru.practicum.shareit.general.Headers.USER_ID_HEADER;
+
 /**
  * TODO Sprint add-controllers.
  */
@@ -20,8 +22,6 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-
-    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto createItem(@RequestHeader(USER_ID_HEADER) Long userId,

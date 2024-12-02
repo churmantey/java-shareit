@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.general.IdGenerator;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -19,7 +18,6 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    private final IdGenerator idGenerator;
     private final UserJpaRepository userRepository;
     private final UserMapper userMapper;
 

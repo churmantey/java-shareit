@@ -13,7 +13,6 @@ public interface ItemJpaRepository extends JpaRepository<Item, Long> {
 
     List<Item> findAllByOwnerOrderByIdAsc(Long ownerId);
 
-
     @Query("select it from Item as it where it.available " +
             "and lower(it.name) like lower(concat('%', :text,'%')) " +
             "or lower(it.description) like lower(concat('%', :text,'%')) order by it.id")
