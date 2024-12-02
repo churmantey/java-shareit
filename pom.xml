@@ -26,6 +26,7 @@
 		<com.puppycrawl.tools.checkstyle.version>10.3</com.puppycrawl.tools.checkstyle.version>
 		<com.github.spotbugs.spotbugs-maven-plugin.version>4.8.5.0</com.github.spotbugs.spotbugs-maven-plugin.version>
 		<org.jacoco.jacoco-maven-plugin.version>0.8.12</org.jacoco.jacoco-maven-plugin.version>
+		<org.postgresql.version>42.7.3</org.postgresql.version>
 	</properties>
 
 
@@ -51,6 +52,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+			<version>${org.postgresql.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
