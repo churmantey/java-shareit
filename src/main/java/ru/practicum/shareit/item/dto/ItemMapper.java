@@ -12,8 +12,12 @@ public interface ItemMapper {
 
     ItemDto itemToDto(Item item);
 
-    List<Item> dtoListToItemList(List<ItemDto> itemDto);
+    List<Item> dtoListToItemList(List<ItemDto> itemDtoList);
 
-    List<ItemDto> itemListToDtoList(List<Item> itemDto);
+    List<ItemDto> itemListToDtoList(List<Item> itemList);
+
+    ItemWithBookingsDto itemToDtoWithBookings(Item item);
+
+    List<ItemWithBookingsDto> itemListToDtoListWithBookings(List<Item> itemList);
 
 }

@@ -35,7 +35,7 @@ public class BookingController {
                                      @PathVariable Long bookingId,
                                      @RequestParam Boolean approved) {
         log.info("CONFIRM booking {}, user {}, approved {}", bookingId, userId, approved);
-        return bookingService.approveBooking(bookingId, userId, approved) ;
+        return bookingService.approveBooking(bookingId, userId, approved);
     }
 
     // GET /bookings/{bookingId}
@@ -64,10 +64,10 @@ public class BookingController {
     }
 
     private BookingSearchStates getStateFromString(String state) {
-        return switch(state.toLowerCase()) {
+        return switch (state.toLowerCase()) {
             case "current" -> BookingSearchStates.CURRENT;
             case "past" -> BookingSearchStates.PAST;
-            case "future"  -> BookingSearchStates.FUTURE;
+            case "future" -> BookingSearchStates.FUTURE;
             case "waiting" -> BookingSearchStates.WAITING;
             case "rejected" -> BookingSearchStates.REJECTED;
             default -> BookingSearchStates.ALL;

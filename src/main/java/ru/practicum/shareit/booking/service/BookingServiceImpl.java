@@ -36,7 +36,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("booking not found, id = " + bookingId));
         if (!booking.getBooker().getId().equals(userId)
-            && !booking.getItem().getOwner().equals(userId))
+                && !booking.getItem().getOwner().equals(userId))
             throw new AccessException("User with id = " + userId +
                     " has no access to booking with id = " + bookingId);
         return bookingMapper.bookingToDto(booking);
@@ -73,7 +73,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getBookingsByUser(Long userId, BookingSearchStates searchState) {
         validateUserById(userId);
-        List<Booking> bookingList =  switch (searchState) {
+        List<Booking> bookingList = switch (searchState) {
             case CURRENT -> bookingRepository.findApprovedCurrentUserBookings(userId, LocalDateTime.now());
             case PAST -> bookingRepository.findApprovedPastUserBookings(userId, LocalDateTime.now());
             case FUTURE -> bookingRepository.findApprovedFutureUserBookings(userId, LocalDateTime.now());
@@ -87,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getBookingsByItemOwner(Long userId, BookingSearchStates searchState) {
         validateUserById(userId);
-        List<Booking> bookingList =  switch (searchState) {
+        List<Booking> bookingList = switch (searchState) {
             case CURRENT -> bookingRepository.findCurrentByItemOwner(userId, LocalDateTime.now());
             case PAST -> bookingRepository.findPastByItemOwner(userId, LocalDateTime.now());
             case FUTURE -> bookingRepository.findFutureByItemOwner(userId, LocalDateTime.now());
@@ -115,6 +115,8 @@ public class BookingServiceImpl implements BookingService {
 
     private void validateBooking(Booking booking) {
         if (booking == null) throw new ValidationException("Booking of null received");
+        if (!booking.getStart().isBefore(booking.getEnd()))
+            throw new ValidationException("Start date is before end date");
         if (booking.getStart().equals(booking.getEnd()))
             throw new ValidationException("Zero booking duration");
         if (booking.getItem().getOwner().equals(booking.getBooker().getId()))
