@@ -9,9 +9,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Entity
 @Table(name = "items")
@@ -19,7 +16,6 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Positive
     private Long id;
 
     @NotBlank

@@ -37,9 +37,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         User user = userMapper.dtoToUser(userDto);
         validateUser(user);
-        return userMapper.userToDto(
-                userRepository.save(user)
-        );
+        return userMapper.userToDto(userRepository.save(user));
     }
 
     @Override
@@ -52,9 +50,7 @@ public class UserServiceImpl implements UserService {
         if (updatedUserDto.getEmail() != null
                 && !updatedUserDto.getEmail().isBlank()) user.setEmail(updatedUserDto.getEmail());
         validateUser(user);
-        return userMapper.userToDto(
-                userRepository.save(user)
-        );
+        return userMapper.userToDto(user);
     }
 
     @Override

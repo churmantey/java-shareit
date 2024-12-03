@@ -64,9 +64,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(ItemDto itemDto) {
         Item item = itemMapper.dtoToItem(itemDto);
         validateItem(item);
-        return itemMapper.itemToDto(
-                itemRepository.save(item)
-        );
+        return itemMapper.itemToDto(itemRepository.save(item));
     }
 
     @Override
@@ -84,9 +82,7 @@ public class ItemServiceImpl implements ItemService {
         if (updatedItemDto.getAvailable() != null)
             item.setAvailable(updatedItemDto.getAvailable());
         validateItem(item);
-        return itemMapper.itemToDto(
-                itemRepository.save(item)
-        );
+        return itemMapper.itemToDto(item);
     }
 
     @Override

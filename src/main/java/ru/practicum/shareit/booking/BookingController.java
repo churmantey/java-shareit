@@ -50,7 +50,7 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getUserBookingsByState(
             @RequestHeader(USER_ID_HEADER) Long userId,
-            @RequestParam(required = false, defaultValue = "all") String state) {
+            @RequestParam(defaultValue = "all") String state) {
         log.info("GET user {} bookings, state = {}", userId, state);
         return bookingService.getBookingsByUser(userId, getStateFromString(state));
     }
@@ -58,7 +58,7 @@ public class BookingController {
     @GetMapping("/owner")
     public List<BookingDto> getOwnerBookingsByState(
             @RequestHeader(USER_ID_HEADER) Long userId,
-            @RequestParam(required = false, defaultValue = "all") String state) {
+            @RequestParam(defaultValue = "all") String state) {
         log.info("GET owner {} bookings, state = {}", userId, state);
         return bookingService.getBookingsByItemOwner(userId, getStateFromString(state));
     }
