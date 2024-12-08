@@ -14,6 +14,6 @@ public class ItemDto {
     private String description;
     private Boolean available;
     private Long owner; // id владельца
-    private Long request; // id запроса
+    private Long requestId; // id запроса
     private List<CommentDto> comments;
 }

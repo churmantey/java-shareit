@@ -1,6 +1,5 @@
 package ru.practicum.shareit.request.dto;
 
-import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,16 +13,9 @@ import java.util.List;
  * TODO Sprint add-item-requests.
  */
 @Data
-public class ItemRequestDto {
+public class NewItemRequestDto {
 
-    private Long id;
-
+    @NotBlank
     private String description;
-
-    private Long author;
-
-    private LocalDateTime created;
-
-    List<ItemForRequestDto> items;
 
 }

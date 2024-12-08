@@ -30,7 +30,7 @@ public class Item {
     @Positive
     private Long owner; // id владельца
 
-    private Long request; // id запроса
+    private Long requestId; // id запроса
 
     @Transient
     private LocalDateTime lastBooking;
