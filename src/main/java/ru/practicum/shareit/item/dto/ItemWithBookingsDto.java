@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,5 +19,5 @@ public class ItemWithBookingsDto {
     private Long request; // id запроса
     private LocalDateTime lastBooking;
     private LocalDateTime nextBooking;
-    private List<CommentDto> comments;
+    private List<CommentDto> comments = new ArrayList<>();
 }

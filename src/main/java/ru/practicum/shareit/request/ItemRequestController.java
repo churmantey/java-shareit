@@ -29,7 +29,7 @@ public class ItemRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     ItemRequestDto createItemRequest(@RequestHeader(USER_ID_HEADER) Long userId,
                                      @Valid @RequestBody NewItemRequestDto newItemRequestDto) {
-        return requestService.addRequest(userId, newItemRequestDto);
+        return requestService.createItemRequest(userId, newItemRequestDto);
     }
 
     // GET /requests
@@ -50,7 +50,7 @@ public class ItemRequestController {
     @GetMapping("/{requestId}")
     @ResponseStatus(HttpStatus.OK)
     ItemRequestDto getItemRequest(@PathVariable Long requestId) {
-        return null;
+        return requestService.getItemRequest(requestId);
     }
 
 }

@@ -15,6 +15,8 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.repository.CommentJpaRepository;
 import ru.practicum.shareit.item.repository.ItemJpaRepository;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestJpaRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.repository.UserJpaRepository;
 
@@ -34,6 +36,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserJpaRepository userRepository;
     private final BookingJpaRepository bookingRepository;
     private final CommentJpaRepository commentRepository;
+    private final ItemRequestJpaRepository requestRepository;
 
     @Override
     public ItemWithBookingsDto getItem(Long itemId) {
@@ -79,8 +82,8 @@ public class ItemServiceImpl implements ItemService {
                 && !updatedItemDto.getName().isBlank()) item.setName(updatedItemDto.getName());
         if (updatedItemDto.getDescription() != null
                 && !updatedItemDto.getDescription().isBlank()) item.setDescription(updatedItemDto.getDescription());
-        if (updatedItemDto.getAvailable() != null)
-            item.setAvailable(updatedItemDto.getAvailable());
+        if (updatedItemDto.getAvailable() != null) item.setAvailable(updatedItemDto.getAvailable());
+        if (updatedItemDto.getRequestId() != null) item.setRequestId(updatedItemDto.getRequestId());
         validateItem(item);
         return itemMapper.itemToDto(item);
     }
@@ -139,6 +142,10 @@ public class ItemServiceImpl implements ItemService {
         if (item.getDescription() == null
                 || item.getDescription().isBlank()) throw new ValidationException("Item description cannot be empty");
         if (item.getAvailable() == null) throw new ValidationException("Item without available field received");
+        if (item.getRequestId() != null
+            && !requestRepository.existsById(item.getRequestId())) {
+               throw new ValidationException("Item request not found, id = " + item.getRequestId());
+        }
         if (item.getOwner() != null) {
             User owner = getUserById(item.getOwner());
             if (owner == null) {

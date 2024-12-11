@@ -5,11 +5,9 @@ import ru.practicum.shareit.request.dto.NewItemRequestDto;
 
 public interface ItemRequestService {
 
-    ItemRequestDto getRequest(Long requestId);
+    ItemRequestDto getItemRequest(Long requestId);
 
-    ItemRequestDto addRequest(Long userId,  NewItemRequestDto newItemRequestDto);
-
-    ItemRequestDto updateRequest(ItemRequestDto itemRequestDto);
+    ItemRequestDto createItemRequest(Long userId, NewItemRequestDto newItemRequestDto);
 
     void deleteRequest(Long requestId);
 

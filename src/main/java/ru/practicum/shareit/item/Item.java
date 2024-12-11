@@ -30,6 +30,7 @@ public class Item {
     @Positive
     private Long owner; // id владельца
 
+    @Column(name = "request")
     private Long requestId; // id запроса
 
     @Transient

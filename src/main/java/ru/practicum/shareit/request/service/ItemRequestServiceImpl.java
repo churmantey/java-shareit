@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
@@ -21,7 +22,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     @Transactional
-    public ItemRequestDto addRequest(Long userId, NewItemRequestDto newItemRequestDto) {
+    public ItemRequestDto createItemRequest(Long userId, NewItemRequestDto newItemRequestDto) {
         ItemRequest itemRequest = new ItemRequest();
         itemRequest.setAuthor(userId);
         itemRequest.setDescription(newItemRequestDto.getDescription());
@@ -29,5 +30,21 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         return requestMapper.itemRequestToDto(requestRepository.save(itemRequest));
     }
 
+    @Override
+    public ItemRequestDto getItemRequest(Long requestId) {
+        ItemRequest itemRequest = getRequestById(requestId);
+        return requestMapper.itemRequestToDto(itemRequest);
+    }
+
+    @Override
+    @Transactional
+    public void deleteRequest(Long requestId) {
+        requestRepository.deleteById(requestId);
+    }
+
+    private ItemRequest getRequestById(Long requestId) {
+        return requestRepository.findById(requestId)
+                .orElseThrow(() -> new NotFoundException("ItemRequest not found, id = " + requestId));
+    }
 
 }

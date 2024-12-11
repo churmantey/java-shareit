@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,5 +16,5 @@ public class ItemDto {
     private Boolean available;
     private Long owner; // id владельца
     private Long requestId; // id запроса
-    private List<CommentDto> comments;
+    private List<CommentDto> comments = new ArrayList<>();
 }
