@@ -11,6 +11,7 @@ import ru.practicum.shareit.request.dto.NewItemRequestDto;
 import ru.practicum.shareit.request.repository.ItemRequestJpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,17 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDto getItemRequest(Long requestId) {
         ItemRequest itemRequest = getRequestById(requestId);
         return requestMapper.itemRequestToDto(itemRequest);
+    }
+
+    @Override
+    public List<ItemRequestDto> getUserItemRequests(Long userId) {
+        return
+                requestRepository.;
+    }
+
+    @Override
+    public List<ItemRequestDto> getOtherItemRequests(Long userId) {
+        return null;
     }
 
     @Override

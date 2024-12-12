@@ -36,14 +36,14 @@ public class ItemRequestController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     List<ItemRequestDto> getUserItemRequests(@RequestHeader(USER_ID_HEADER) Long userId) {
-        return null;
+        return requestService.getUserItemRequests(userId);
     }
 
     // GET /requests/all
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     List<ItemRequestDto> getOtherItemRequests(@RequestHeader(USER_ID_HEADER) Long userId) {
-        return null;
+        return requestService.getOtherItemRequests(userId);
     }
 
     // GET /requests/{requestId}
