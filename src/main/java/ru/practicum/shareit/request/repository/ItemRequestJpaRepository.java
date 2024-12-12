@@ -9,4 +9,6 @@ public interface ItemRequestJpaRepository  extends JpaRepository<ItemRequest, Lo
 
     List<ItemRequest> findByAuthorOrderByCreated(Long userId);
 
+    List<ItemRequest> findByAuthorNotOrderByCreated(Long userId);
+
 }

@@ -18,4 +18,6 @@ public interface ItemJpaRepository extends JpaRepository<Item, Long> {
             "or lower(it.description) like lower(concat('%', :text,'%')) order by it.id")
     List<Item> findAvailableByNameOrDescription(@Param("text") String text);
 
+    List<Item> findByRequestId(Long requestId);
+
 }

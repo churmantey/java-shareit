@@ -1,13 +1,10 @@
 package ru.practicum.shareit.request.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import ru.practicum.shareit.item.dto.ItemForRequestDto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +21,6 @@ public class ItemRequestDto {
 
     private LocalDateTime created;
 
-    List<ItemForRequestDto> items;
+    List<ItemForRequestDto> items = new ArrayList<>();
 
 }
