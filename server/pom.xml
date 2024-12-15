@@ -8,6 +8,11 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <com.jayway.jsonpath.version>2.9.0</com.jayway.jsonpath.version>
+    </properties>
+
+
     <artifactId>shareit-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
@@ -58,7 +63,15 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${com.jayway.jsonpath.version}</version>
+        </dependency>
+
     </dependencies>
+
 
     <build>
         <plugins>
