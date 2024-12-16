@@ -1,8 +1,9 @@
-package ru.practicum.shareit;
+package ru.practicum.shareit.user;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,26 +22,42 @@ import static org.hamcrest.Matchers.*;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UserServiceImplTests {
 
-
     private final EntityManager em;
     private final UserService service;
+    private UserDto userDto;
+    private UserDto updatedDto;
 
+    @BeforeEach
+    public void setUp() {
+        userDto = new UserDto(1L, "Пётр Иванов", "some@email.com");
+        updatedDto = new UserDto();
+        updatedDto.setId(1L);
+        updatedDto.setName("Roger Waters");
+        updatedDto.setEmail("dark.side@moon.com");
+    }
 
-    // интеграционный тест
+    // Интеграционные тесты
     @Test
-    void testSaveUser() {
-        UserDto userDto = new UserDto(1L, "Пётр Иванов", "some@email.com");
-
+    public void createUserTest() {
         service.createUser(userDto);
-
         TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
         User user = query.setParameter("email", userDto.getEmail())
                 .getSingleResult();
-
         assertThat(user.getId(), notNullValue());
         assertThat(user.getName(), equalTo(userDto.getName()));
         assertThat(user.getEmail(), equalTo(userDto.getEmail()));
+    }
 
+    @Test
+    public void updateUserTest() {
+        service.createUser(userDto);
+        service.updateUser(updatedDto);
+        TypedQuery<User> query = em.createQuery("Select u from User u where u.id = :id", User.class);
+        User user = query.setParameter("id", updatedDto.getId())
+                .getSingleResult();
+        assertThat(user.getId(), notNullValue());
+        assertThat(user.getName(), equalTo(updatedDto.getName()));
+        assertThat(user.getEmail(), equalTo(updatedDto.getEmail()));
     }
 
 }
