@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
 import ru.practicum.shareit.item.dto.NewCommentDto;
-import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.nio.charset.StandardCharsets;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.practicum.shareit.general.Headers.USER_ID_HEADER;
+import static ru.practicum.shareit.Headers.USER_ID_HEADER;
 
 @WebMvcTest(controllers = ItemController.class)
 public class ItemControllerTests {
@@ -45,7 +45,7 @@ public class ItemControllerTests {
     private MockMvc mvc;
 
     @MockBean
-    private ItemService itemService;
+    private ItemClient itemClient;
 
     private ItemDto itemDto1;
     private ItemDto itemDto2;
@@ -109,8 +109,8 @@ public class ItemControllerTests {
 
     @Test
     public void createItemTest() throws Exception {
-        when(itemService.createItem(any(ItemDto.class)))
-                .thenReturn(itemDto1);
+        when(itemClient.createItem(any(ItemDto.class)))
+                .thenReturn(ResponseEntity.ok(itemDto1));
 
         mvc.perform(post(API_PREFIX)
                         .content(mapper.writeValueAsString(itemDto1))
@@ -128,8 +128,8 @@ public class ItemControllerTests {
 
     @Test
     public void getItemTest() throws Exception {
-        when(itemService.getItem(anyLong()))
-                .thenReturn(itemWithBookingsDto);
+        when(itemClient.getItem(anyLong()))
+                .thenReturn(ResponseEntity.ok(itemWithBookingsDto));
 
         mvc.perform(get(API_PREFIX + "/" + itemWithBookingsDto.getId().toString())
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -146,8 +146,8 @@ public class ItemControllerTests {
     @Test
     public void getItemsByOwnerTest() throws Exception {
 
-        when(itemService.getItemsByOwner(anyLong()))
-                .thenReturn(Arrays.asList(itemWithBookingsDto, itemWithBookingsDto2));
+        when(itemClient.getItemsByOwner(anyLong()))
+                .thenReturn(ResponseEntity.ok(Arrays.asList(itemWithBookingsDto, itemWithBookingsDto2)));
 
         mvc.perform(get(API_PREFIX)
                         .header(USER_ID_HEADER, userDto.getId())
@@ -176,8 +176,8 @@ public class ItemControllerTests {
 
     @Test
     public void updateItemTest() throws Exception {
-        when(itemService.updateItem(any(ItemDto.class)))
-                .thenReturn(itemDto1);
+        when(itemClient.updateItem(any(ItemDto.class)))
+                .thenReturn(ResponseEntity.ok(itemDto1));
 
         mvc.perform(patch(API_PREFIX + "/" + itemDto1.getId())
                         .content(mapper.writeValueAsString(itemDto1))
@@ -196,8 +196,8 @@ public class ItemControllerTests {
 
     @Test
     public void findItemsByTextTest() throws Exception {
-        when(itemService.findAvailableItemsByText(anyString()))
-                .thenReturn(Arrays.asList(itemDto1, itemDto2));
+        when(itemClient.findItemsByText(anyString()))
+                .thenReturn(ResponseEntity.ok(Arrays.asList(itemDto1, itemDto2)));
 
         mvc.perform(get(API_PREFIX + "/search?text=sometext")
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -221,8 +221,8 @@ public class ItemControllerTests {
 
     @Test
     public void addCommentTest() throws Exception {
-        when(itemService.addComment(anyLong(), anyLong(), any(NewCommentDto.class)))
-                .thenReturn(commentDto);
+        when(itemClient.addComment(anyLong(), anyLong(), any(NewCommentDto.class)))
+                .thenReturn(ResponseEntity.ok(commentDto));
 
         mvc.perform(post(API_PREFIX + "/" + itemDto1.getId() + "/comment")
                         .content(mapper.writeValueAsString(newCommentDto))

@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -26,11 +28,13 @@ public class UserServiceImplTests {
     private final EntityManager em;
     private final UserService service;
     private UserDto userDto;
+    private UserDto userDto2;
     private UserDto updatedDto;
 
     @BeforeEach
     public void setUp() {
         userDto = new UserDto(1L, "Пётр Иванов", "some@email.com");
+        userDto2 = new UserDto(2L, "Иван Петров", "some.other@email.com");
         updatedDto = new UserDto();
         updatedDto.setId(1L);
         updatedDto.setName("Roger Waters");
@@ -60,6 +64,28 @@ public class UserServiceImplTests {
         assertThat(user.getId(), notNullValue());
         assertThat(user.getName(), equalTo(updatedDto.getName()));
         assertThat(user.getEmail(), equalTo(updatedDto.getEmail()));
+    }
+
+    @Test
+    public void getUserTest() {
+        userDto = service.createUser(userDto);
+
+        UserDto storedUserDto = service.getUser(userDto.getId());
+
+        assertThat(storedUserDto, notNullValue());
+        assertThat(storedUserDto.getName(), equalTo(userDto.getName()));
+        assertThat(storedUserDto.getEmail(), equalTo(userDto.getEmail()));
+    }
+
+    @Test
+    public void getAllUsersTest() {
+        userDto = service.createUser(userDto);
+        userDto2 = service.createUser(userDto2);
+
+        List<UserDto> userList = service.getAllUsers();
+
+        assertThat(userList, notNullValue());
+        assertThat(userList.size(), equalTo(2));
     }
 
 }
