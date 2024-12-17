@@ -56,7 +56,7 @@ public class ItemServiceImplTests {
 
     @Test
     public void getItemsByOwnerTest() {
-        userService.createUser(userDto);
+        userDto = userService.createUser(userDto);
 
         TypedQuery<Item> query = em.createQuery("Select i from Item i where owner = :id", Item.class);
         List<Item> userItems = query.setParameter("id", userDto.getId())
@@ -64,8 +64,11 @@ public class ItemServiceImplTests {
         assertThat(userItems, notNullValue());
         assertThat(userItems.size(), equalTo(0));
 
-        service.createItem(itemDto1);
-        service.createItem(itemDto2);
+        itemDto1.setOwner(userDto.getId());
+        itemDto2.setOwner(userDto.getId());
+
+        itemDto1 = service.createItem(itemDto1);
+        itemDto2 = service.createItem(itemDto2);
 
         userItems = query.setParameter("id", userDto.getId())
                 .getResultList();
