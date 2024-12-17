@@ -115,7 +115,9 @@ public class ItemRequestServiceImplTests {
     public void deleteRequestTest() {
         ItemRequestDto requestDto1 = service.createItemRequest(userDto1.getId(), newRequestDto1);
         service.deleteRequest(requestDto1.getId());
-        Assertions.assertThrows(NotFoundException.class, () -> {service.getItemRequest(requestDto1.getId());});
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            service.getItemRequest(requestDto1.getId());
+        });
     }
 
 }
