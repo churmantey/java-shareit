@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 @Transactional
 @SpringBootTest(
@@ -50,7 +51,8 @@ public class UserServiceImplTests {
 
     @Test
     public void updateUserTest() {
-        service.createUser(userDto);
+        UserDto createdUser = service.createUser(userDto);
+        updatedDto.setId(createdUser.getId());
         service.updateUser(updatedDto);
         TypedQuery<User> query = em.createQuery("Select u from User u where u.id = :id", User.class);
         User user = query.setParameter("id", updatedDto.getId())

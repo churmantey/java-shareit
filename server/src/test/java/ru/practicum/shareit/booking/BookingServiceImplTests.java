@@ -49,6 +49,10 @@ public class BookingServiceImplTests {
         userDto2 = new UserDto(2L, "Иван Петров", "some.other@email.com");
         userDto3 = new UserDto(3L, "Сергей Андреев", "serge@email.com");
 
+        userDto1 = userService.createUser(userDto1);
+        userDto2 = userService.createUser(userDto2);
+        userDto3 = userService.createUser(userDto3);
+
         itemDto1 = new ItemDto();
         itemDto1.setId(1L);
         itemDto1.setName("first item");
@@ -63,6 +67,9 @@ public class BookingServiceImplTests {
         itemDto2.setAvailable(true);
         itemDto2.setOwner(userDto1.getId());
 
+        itemDto1 = itemService.createItem(itemDto1);
+        itemDto2 = itemService.createItem(itemDto2);
+
         newBookingDto1 = new NewBookingDto();
         newBookingDto1.setItemId(itemDto1.getId());
         newBookingDto1.setStart(LocalDateTime.now().minusDays(2));
@@ -72,12 +79,6 @@ public class BookingServiceImplTests {
         newBookingDto2.setItemId(itemDto2.getId());
         newBookingDto2.setStart(LocalDateTime.now().plusHours(1));
         newBookingDto2.setEnd(LocalDateTime.now().plusDays(1));
-
-        userService.createUser(userDto1);
-        userService.createUser(userDto2);
-        userService.createUser(userDto3);
-        itemService.createItem(itemDto1);
-        itemService.createItem(itemDto2);
     }
 
     @Test
@@ -85,8 +86,8 @@ public class BookingServiceImplTests {
         BookingDto booking1 = service.createBooking(newBookingDto1, userDto2.getId());
         BookingDto booking2 = service.createBooking(newBookingDto2, userDto3.getId());
 
-        service.approveBooking(booking1.getId(), userDto1.getId(), true);
-        service.approveBooking(booking2.getId(), userDto1.getId(), true);
+        booking1 = service.approveBooking(booking1.getId(), userDto1.getId(), true);
+        booking2 = service.approveBooking(booking2.getId(), userDto1.getId(), true);
 
         List<BookingDto> bookings = service.getBookingsByItemOwner(userDto1.getId(), BookingSearchStates.ALL);
 

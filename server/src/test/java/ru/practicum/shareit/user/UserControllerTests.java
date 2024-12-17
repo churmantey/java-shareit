@@ -84,10 +84,10 @@ public class UserControllerTests {
                 .thenReturn(new UserDto(userDto.getId(), updatedDto.getName(), updatedDto.getEmail()));
 
         mvc.perform(patch(API_PREFIX + "/" + userDto.getId().toString())
-                    .content(mapper.writeValueAsString(updatedDto))
-                    .characterEncoding(StandardCharsets.UTF_8)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .accept(MediaType.APPLICATION_JSON))
+                        .content(mapper.writeValueAsString(updatedDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(updatedDto.getName())))

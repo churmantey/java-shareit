@@ -6,9 +6,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 public class ItemWithBookingsDto {
     private Long id;
