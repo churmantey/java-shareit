@@ -11,8 +11,6 @@ public interface ItemService {
 
     ItemWithBookingsDto getItem(Long itemId);
 
-    List<ItemDto> getAllItems();
-
     List<ItemWithBookingsDto> getItemsByOwner(Long userId);
 
     List<ItemDto> findAvailableItemsByText(String searchQuery);

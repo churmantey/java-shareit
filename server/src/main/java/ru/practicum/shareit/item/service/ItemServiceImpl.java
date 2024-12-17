@@ -44,10 +44,6 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.itemToDtoWithBookings(item);
     }
 
-    @Override
-    public List<ItemDto> getAllItems() {
-        return itemMapper.itemListToDtoList(itemRepository.findAllByOrderByIdAsc());
-    }
 
     @Override
     public List<ItemWithBookingsDto> getItemsByOwner(Long userId) {

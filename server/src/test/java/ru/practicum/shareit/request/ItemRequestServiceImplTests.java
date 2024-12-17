@@ -2,11 +2,13 @@ package ru.practicum.shareit.request;
 
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.NewItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
@@ -71,6 +73,49 @@ public class ItemRequestServiceImplTests {
         assertThat(requests.get(1).getAuthor(), equalTo(userDto2.getId()));
         assertThat(requests.get(1).getCreated(), lessThanOrEqualTo(LocalDateTime.now()));
         assertThat(requests.get(0).getCreated(), lessThanOrEqualTo(requests.get(1).getCreated()));
+    }
+
+    @Test
+    public void createItemRequestTest() {
+        ItemRequestDto requestDto1 = service.createItemRequest(userDto1.getId(), newRequestDto1);
+        assertThat(requestDto1.getDescription(), equalTo(newRequestDto1.getDescription()));
+    }
+
+    @Test
+    public void getItemRequestTest() {
+        ItemRequestDto requestDto1 = service.createItemRequest(userDto1.getId(), newRequestDto1);
+
+        ItemRequestDto retrievedRequest = service.getItemRequest(requestDto1.getId());
+
+        assertThat(requestDto1.getId(), equalTo(retrievedRequest.getId()));
+        assertThat(requestDto1.getCreated(), equalTo(retrievedRequest.getCreated()));
+        assertThat(requestDto1.getDescription(), equalTo(retrievedRequest.getDescription()));
+    }
+
+    @Test
+    public void getUserItemRequestsTest() {
+        ItemRequestDto requestDto1 = service.createItemRequest(userDto1.getId(), newRequestDto1);
+        ItemRequestDto requestDto2 = service.createItemRequest(userDto1.getId(), newRequestDto2);
+
+        List<ItemRequestDto> requests = service.getUserItemRequests(userDto1.getId());
+
+        assertThat(requests, notNullValue());
+        assertThat(requests.size(), equalTo(2));
+        assertThat(requests.get(0).getDescription(), equalTo(requestDto1.getDescription()));
+        assertThat(requests.get(0).getAuthor(), equalTo(userDto1.getId()));
+        assertThat(requests.get(0).getCreated(), lessThanOrEqualTo(LocalDateTime.now()));
+
+        assertThat(requests.get(1).getDescription(), equalTo(requestDto2.getDescription()));
+        assertThat(requests.get(1).getAuthor(), equalTo(userDto1.getId()));
+        assertThat(requests.get(1).getCreated(), lessThanOrEqualTo(LocalDateTime.now()));
+        assertThat(requests.get(0).getCreated(), lessThanOrEqualTo(requests.get(1).getCreated()));
+    }
+
+    @Test
+    public void deleteRequestTest() {
+        ItemRequestDto requestDto1 = service.createItemRequest(userDto1.getId(), newRequestDto1);
+        service.deleteRequest(requestDto1.getId());
+        Assertions.assertThrows(NotFoundException.class, () -> {service.getItemRequest(requestDto1.getId());});
     }
 
 }

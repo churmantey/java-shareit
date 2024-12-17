@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface ItemJpaRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findAllByOrderByIdAsc();
-
     List<Item> findAllByOwnerOrderByIdAsc(Long ownerId);
 
     @Query("select it from Item as it where it.available " +
