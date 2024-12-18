@@ -4,15 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.booking.dto.BookingMapperImpl;
 import ru.practicum.shareit.item.Comment;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.CommentMapper;
-import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.CommentMapperImpl;
+import ru.practicum.shareit.item.dto.ItemMapperImpl;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserMapper;
+import ru.practicum.shareit.user.dto.UserMapperImpl;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class MappersTest {
 
-    private final UserMapper userMapper;
-    private final ItemMapper itemMapper;
-    private final BookingMapper bookingMapper;
-    private final CommentMapper commentMapper;
+    private final UserMapperImpl userMapper;
+    private final ItemMapperImpl itemMapper;
+    private final BookingMapperImpl bookingMapper;
+    private final CommentMapperImpl commentMapper;
 
     @Test
     public void userMapperTests() {
