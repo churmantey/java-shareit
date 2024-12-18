@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface BookingJpaRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByBookerIdAndStatusEqualsOrderByStart(Long userId, String status);
+    List<Booking> findByBookerIdAndStatusEqualsOrderByStart(Long userId, BookingStatus status);
 
     List<Booking> findByBookerIdOrderByStart(Long userId);
 
@@ -48,7 +48,7 @@ public interface BookingJpaRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByItemOwnerOrderByStart(Long userId);
 
-    List<Booking> findByItemOwnerAndStatusEqualsOrderByStart(Long userId, String status);
+    List<Booking> findByItemOwnerAndStatusEqualsOrderByStart(Long userId, BookingStatus status);
 
     @Query("select bk from Booking as bk" +
             " where bk.item.owner = :userId" +

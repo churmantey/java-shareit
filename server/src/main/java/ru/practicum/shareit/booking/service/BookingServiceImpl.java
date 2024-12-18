@@ -75,8 +75,9 @@ public class BookingServiceImpl implements BookingService {
             case CURRENT -> bookingRepository.findApprovedCurrentUserBookings(userId, LocalDateTime.now());
             case PAST -> bookingRepository.findApprovedPastUserBookings(userId, LocalDateTime.now());
             case FUTURE -> bookingRepository.findApprovedFutureUserBookings(userId, LocalDateTime.now());
-            case WAITING, REJECTED ->
-                    bookingRepository.findByBookerIdAndStatusEqualsOrderByStart(userId, searchState.toString());
+            case WAITING -> bookingRepository.findByBookerIdAndStatusEqualsOrderByStart(userId, BookingStatus.WAITING);
+            case REJECTED ->
+                    bookingRepository.findByBookerIdAndStatusEqualsOrderByStart(userId, BookingStatus.REJECTED);
             default -> bookingRepository.findByBookerIdOrderByStart(userId);
         };
         return bookingMapper.bookingListToDtoList(bookingList);
@@ -89,8 +90,9 @@ public class BookingServiceImpl implements BookingService {
             case CURRENT -> bookingRepository.findCurrentByItemOwner(userId, LocalDateTime.now());
             case PAST -> bookingRepository.findPastByItemOwner(userId, LocalDateTime.now());
             case FUTURE -> bookingRepository.findFutureByItemOwner(userId, LocalDateTime.now());
-            case WAITING, REJECTED ->
-                    bookingRepository.findByItemOwnerAndStatusEqualsOrderByStart(userId, searchState.toString());
+            case WAITING -> bookingRepository.findByItemOwnerAndStatusEqualsOrderByStart(userId, BookingStatus.WAITING);
+            case REJECTED ->
+                    bookingRepository.findByItemOwnerAndStatusEqualsOrderByStart(userId, BookingStatus.REJECTED);
             default -> bookingRepository.findByItemOwnerOrderByStart(userId);
         };
 

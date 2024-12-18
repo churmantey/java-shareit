@@ -42,6 +42,7 @@ public class BookingServiceImplTests {
     private UserDto userDto3;
     private NewBookingDto newBookingDto1;
     private NewBookingDto newBookingDto2;
+    private NewBookingDto newBookingDto3;
 
     @BeforeEach
     public void setUp() {
@@ -79,28 +80,88 @@ public class BookingServiceImplTests {
         newBookingDto2.setItemId(itemDto2.getId());
         newBookingDto2.setStart(LocalDateTime.now().plusHours(1));
         newBookingDto2.setEnd(LocalDateTime.now().plusDays(1));
+
+        newBookingDto3 = new NewBookingDto();
+        newBookingDto3.setItemId(itemDto2.getId());
+        newBookingDto3.setStart(LocalDateTime.now().minusHours(1));
+        newBookingDto3.setEnd(LocalDateTime.now().plusDays(1));
+
+    }
+
+    @Test
+    public void createBookingTest() {
+        BookingDto booking1 = service.createBooking(newBookingDto1, userDto2.getId());
+        assertThat(booking1, notNullValue());
+        assertThat(booking1.getItem().getId(), equalTo(itemDto1.getId()));
+        assertThat(booking1.getBooker().getId(), equalTo(userDto2.getId()));
+        assertThat(booking1.getStart(), equalTo(newBookingDto1.getStart()));
+        assertThat(booking1.getEnd(), equalTo(newBookingDto1.getEnd()));
+        assertThat(booking1.getStatus(), equalTo(BookingStatus.WAITING));
+    }
+
+    @Test
+    public void approveBookingTest() {
+        BookingDto booking1 = service.createBooking(newBookingDto1, userDto2.getId());
+        assertThat(booking1, notNullValue());
+        assertThat(booking1.getItem().getId(), equalTo(itemDto1.getId()));
+        assertThat(booking1.getBooker().getId(), equalTo(userDto2.getId()));
+        assertThat(booking1.getStart(), equalTo(newBookingDto1.getStart()));
+        assertThat(booking1.getEnd(), equalTo(newBookingDto1.getEnd()));
+        assertThat(booking1.getStatus(), equalTo(BookingStatus.WAITING));
+        BookingDto approvedBooking = service.approveBooking(booking1.getId(), userDto1.getId(), true);
+        assertThat(approvedBooking.getId(), equalTo(booking1.getId()));
+        assertThat(approvedBooking.getStatus(), equalTo(BookingStatus.APPROVED));
+    }
+
+    @Test
+    public void getBookingsByUserTest() {
+        BookingDto booking1 = service.createBooking(newBookingDto1, userDto2.getId());
+        BookingDto booking2 = service.createBooking(newBookingDto2, userDto2.getId());
+
+        List<BookingDto> bookings = service.getBookingsByUser(userDto2.getId(), BookingSearchStates.WAITING);
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(2));
+
+        bookings = service.getBookingsByUser(userDto2.getId(), BookingSearchStates.ALL);
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(2));
     }
 
     @Test
     public void getBookingsByItemOwnerTest() {
         BookingDto booking1 = service.createBooking(newBookingDto1, userDto2.getId());
         BookingDto booking2 = service.createBooking(newBookingDto2, userDto3.getId());
+        BookingDto booking3 = service.createBooking(newBookingDto3, userDto3.getId());
 
-        booking1 = service.approveBooking(booking1.getId(), userDto1.getId(), true);
-        booking2 = service.approveBooking(booking2.getId(), userDto1.getId(), true);
-
-        List<BookingDto> bookings = service.getBookingsByItemOwner(userDto1.getId(), BookingSearchStates.ALL);
+        List<BookingDto> bookings = service.getBookingsByItemOwner(userDto1.getId(), BookingSearchStates.WAITING);
 
         assertThat(bookings, notNullValue());
-        assertThat(bookings.size(), equalTo(2));
+        assertThat(bookings.size(), equalTo(3));
         assertThat(bookings.get(0).getItem().getId(), equalTo(itemDto1.getId()));
         assertThat(bookings.get(0).getBooker().getId(), equalTo(userDto2.getId()));
         assertThat(bookings.get(0).getStart(), equalTo(newBookingDto1.getStart()));
         assertThat(bookings.get(0).getEnd(), equalTo(newBookingDto1.getEnd()));
         assertThat(bookings.get(1).getItem().getId(), equalTo(itemDto2.getId()));
         assertThat(bookings.get(1).getBooker().getId(), equalTo(userDto3.getId()));
-        assertThat(bookings.get(1).getStart(), equalTo(newBookingDto2.getStart()));
-        assertThat(bookings.get(1).getEnd(), equalTo(newBookingDto2.getEnd()));
+        assertThat(bookings.get(1).getStart(), equalTo(newBookingDto3.getStart()));
+        assertThat(bookings.get(1).getEnd(), equalTo(newBookingDto3.getEnd()));
+
+        bookings = service.getBookingsByItemOwner(userDto1.getId(), BookingSearchStates.ALL);
+
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(3));
+        assertThat(bookings.get(0).getItem().getId(), equalTo(itemDto1.getId()));
+        assertThat(bookings.get(0).getBooker().getId(), equalTo(userDto2.getId()));
+        assertThat(bookings.get(0).getStart(), equalTo(newBookingDto1.getStart()));
+        assertThat(bookings.get(0).getEnd(), equalTo(newBookingDto1.getEnd()));
+        assertThat(bookings.get(1).getItem().getId(), equalTo(itemDto2.getId()));
+        assertThat(bookings.get(1).getBooker().getId(), equalTo(userDto3.getId()));
+        assertThat(bookings.get(1).getStart(), equalTo(newBookingDto3.getStart()));
+        assertThat(bookings.get(1).getEnd(), equalTo(newBookingDto3.getEnd()));
+
+        service.approveBooking(booking1.getId(), userDto1.getId(), true);
+        service.approveBooking(booking2.getId(), userDto1.getId(), true);
+        service.approveBooking(booking3.getId(), userDto1.getId(), true);
 
         bookings = service.getBookingsByItemOwner(userDto1.getId(), BookingSearchStates.PAST);
 
@@ -120,6 +181,13 @@ public class BookingServiceImplTests {
         assertThat(bookings.get(0).getStart(), equalTo(newBookingDto2.getStart()));
         assertThat(bookings.get(0).getEnd(), equalTo(newBookingDto2.getEnd()));
 
-    }
+        bookings = service.getBookingsByItemOwner(userDto1.getId(), BookingSearchStates.CURRENT);
 
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(1));
+        assertThat(bookings.get(0).getItem().getId(), equalTo(itemDto2.getId()));
+        assertThat(bookings.get(0).getBooker().getId(), equalTo(userDto3.getId()));
+        assertThat(bookings.get(0).getStart(), equalTo(newBookingDto3.getStart()));
+        assertThat(bookings.get(0).getEnd(), equalTo(newBookingDto3.getEnd()));
+    }
 }

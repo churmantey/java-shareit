@@ -3,17 +3,24 @@ package ru.practicum.shareit.item;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.NewBookingDto;
+import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
+import ru.practicum.shareit.item.dto.NewCommentDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,6 +38,7 @@ public class ItemServiceImplTests {
     private final EntityManager em;
     private final ItemService service;
     private final UserService userService;
+    private final BookingService bookingService;
 
     private ItemDto itemDto1;
     private ItemDto itemDto2;
@@ -137,6 +145,42 @@ public class ItemServiceImplTests {
         assertThat(retrievedList.get(0).getDescription(), equalTo(itemDto1.getDescription()));
         assertThat(retrievedList.get(1).getName(), equalTo(itemDto2.getName()));
         assertThat(retrievedList.get(1).getDescription(), equalTo(itemDto2.getDescription()));
+    }
+
+    @Test
+    public void deleteItemTest() {
+        ItemDto itemDto = service.createItem(itemDto1);
+        service.deleteItemById(itemDto.getId());
+        Assertions.assertThrows(NotFoundException.class, () -> service.getItem(itemDto.getId()));
+    }
+
+    @Test
+    public void addCommentTest() {
+        ItemDto itemDto = service.createItem(itemDto1);
+
+        UserDto userDto2 = userService.createUser(
+                new UserDto(null, "Иван Петров", "some.petrov@email.com")
+        );
+
+        NewBookingDto newBookingDto = new NewBookingDto();
+        newBookingDto.setItemId(itemDto.getId());
+        newBookingDto.setStart(LocalDateTime.now().minusDays(2));
+        newBookingDto.setEnd(LocalDateTime.now().minusDays(1));
+        BookingDto bookingDto = bookingService.createBooking(newBookingDto, userDto2.getId());
+
+        bookingService.approveBooking(bookingDto.getId(), userDto.getId(), true);
+
+        NewCommentDto newCommentDto = new NewCommentDto();
+        newCommentDto.setText("test comment");
+        newCommentDto.setAuthorName("somebody");
+        service.addComment(userDto2.getId(), itemDto.getId(), newCommentDto);
+
+        ItemWithBookingsDto itemWithBookingsDto = service.getItem(itemDto.getId());
+
+        assertThat(itemWithBookingsDto, notNullValue());
+        assertThat(itemWithBookingsDto.getId(), equalTo(itemDto.getId()));
+        assertThat(itemWithBookingsDto.getComments().size(), equalTo(1));
+        assertThat(itemWithBookingsDto.getComments().get(0).getText(), equalTo(newCommentDto.getText()));
     }
 
 }

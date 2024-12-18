@@ -113,7 +113,7 @@ public class ItemServiceImpl implements ItemService {
             comment.setAuthor(user);
             comment.setText(newCommentDto.getText());
             comment.setCreated(LocalDateTime.now());
-            comment = commentRepository.save(comment);
+            commentRepository.save(comment);
             return commentMapper.mapToCommentDto(comment);
         } else {
             throw new ValidationException("User " + userId + " has not used item " + itemId + " yet");
