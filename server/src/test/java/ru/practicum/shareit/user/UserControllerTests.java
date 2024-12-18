@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.exception.DuplicateException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -96,7 +97,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void updateUserWithException() throws Exception {
+    public void updateUserWithNotFoundException() throws Exception {
         when(userService.updateUser(any()))
                 .thenThrow(new NotFoundException("User not found"));
 
@@ -109,6 +110,19 @@ public class UserControllerTests {
                 .andExpect(jsonPath("$.message", is("User not found")));
     }
 
+    @Test
+    public void updateUserWithDuplicateException() throws Exception {
+        when(userService.updateUser(any()))
+                .thenThrow(new DuplicateException("Email is in use"));
+
+        mvc.perform(patch(API_PREFIX + "/" + userDto.getId().toString())
+                        .content(mapper.writeValueAsString(updatedDto))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message", is("Email is in use")));
+    }
 
     @Test
     public void getUserTest() throws Exception {

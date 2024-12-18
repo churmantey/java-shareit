@@ -142,10 +142,7 @@ public class ItemServiceImpl implements ItemService {
             throw new ValidationException("Item request not found, id = " + item.getRequestId());
         }
         if (item.getOwner() != null) {
-            User owner = getUserById(item.getOwner());
-            if (owner == null) {
-                throw new NotFoundException("Item owner with id = " + item.getOwner() + " not found");
-            }
+            getUserById(item.getOwner());
         }
     }
 

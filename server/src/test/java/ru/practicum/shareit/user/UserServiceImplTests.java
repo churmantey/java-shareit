@@ -3,11 +3,14 @@ package ru.practicum.shareit.user;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.DuplicateException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
@@ -16,6 +19,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @SpringBootTest(
@@ -51,6 +55,9 @@ public class UserServiceImplTests {
         assertThat(user.getId(), notNullValue());
         assertThat(user.getName(), equalTo(userDto.getName()));
         assertThat(user.getEmail(), equalTo(userDto.getEmail()));
+
+        userDto.setId(userDto.getId() + 1);
+        assertThrows(DuplicateException.class, () -> service.createUser(userDto));
     }
 
     @Test
@@ -78,6 +85,11 @@ public class UserServiceImplTests {
     }
 
     @Test
+    public void getNonexistentUserTest() {
+        assertThrows(NotFoundException.class, () -> service.getUser(userDto.getId()));
+    }
+
+    @Test
     public void getAllUsersTest() {
         userDto = service.createUser(userDto);
         userDto2 = service.createUser(userDto2);
@@ -86,6 +98,13 @@ public class UserServiceImplTests {
 
         assertThat(userList, notNullValue());
         assertThat(userList.size(), equalTo(2));
+    }
+
+    @Test
+    public void deleteUserTest() {
+        userDto = service.createUser(userDto);
+        Assertions.assertDoesNotThrow(() -> service.deleteUserById(userDto.getId()));
+        Assertions.assertThrows(NotFoundException.class, () -> service.deleteUserById(userDto.getId()));
     }
 
 }

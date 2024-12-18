@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
+import ru.practicum.shareit.exception.AccessException;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -21,6 +24,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 @SpringBootTest(
@@ -100,6 +104,49 @@ public class BookingServiceImplTests {
     }
 
     @Test
+    public void createBookingUnavailableItemTest() {
+        itemDto1.setAvailable(false);
+        itemService.updateItem(itemDto1);
+        assertThrows(ValidationException.class, () -> service.createBooking(newBookingDto1, userDto2.getId()));
+    }
+
+    @Test
+    public void createBookingByOwnerTest() {
+        assertThrows(ValidationException.class, () -> service.createBooking(newBookingDto1, itemDto1.getOwner()));
+    }
+
+    @Test
+    public void createInvalidBookingTest() {
+        newBookingDto1.setStart(newBookingDto1.getEnd());
+        assertThrows(ValidationException.class, () -> service.createBooking(newBookingDto1, userDto2.getId()));
+
+        newBookingDto2.setEnd(newBookingDto2.getStart().minusHours(1));
+        assertThrows(ValidationException.class, () -> service.createBooking(newBookingDto2, userDto2.getId()));
+
+    }
+
+    @Test
+    public void getBookingTest() {
+        BookingDto booking1 = service.createBooking(newBookingDto1, userDto2.getId());
+
+        BookingDto storedBooking = service.getBooking(booking1.getId(), userDto2.getId());
+        assertThat(booking1, notNullValue());
+        assertThat(storedBooking.getItem().getId(), equalTo(itemDto1.getId()));
+        assertThat(storedBooking.getBooker().getId(), equalTo(userDto2.getId()));
+        assertThat(storedBooking.getStart(), equalTo(newBookingDto1.getStart()));
+        assertThat(storedBooking.getEnd(), equalTo(newBookingDto1.getEnd()));
+        assertThat(storedBooking.getStatus(), equalTo(BookingStatus.WAITING));
+
+        assertThrows(NotFoundException.class,
+                () -> service.getBooking(booking1.getId() + 1, userDto2.getId()));
+
+        assertThrows(AccessException.class,
+                () -> service.getBooking(booking1.getId(), userDto2.getId() + 1));
+
+    }
+
+
+    @Test
     public void approveBookingTest() {
         BookingDto booking1 = service.createBooking(newBookingDto1, userDto2.getId());
         assertThat(booking1, notNullValue());
@@ -117,14 +164,41 @@ public class BookingServiceImplTests {
     public void getBookingsByUserTest() {
         BookingDto booking1 = service.createBooking(newBookingDto1, userDto2.getId());
         BookingDto booking2 = service.createBooking(newBookingDto2, userDto2.getId());
+        BookingDto booking3 = service.createBooking(newBookingDto3, userDto2.getId());
 
         List<BookingDto> bookings = service.getBookingsByUser(userDto2.getId(), BookingSearchStates.WAITING);
         assertThat(bookings, notNullValue());
-        assertThat(bookings.size(), equalTo(2));
+        assertThat(bookings.size(), equalTo(3));
 
         bookings = service.getBookingsByUser(userDto2.getId(), BookingSearchStates.ALL);
         assertThat(bookings, notNullValue());
-        assertThat(bookings.size(), equalTo(2));
+        assertThat(bookings.size(), equalTo(3));
+
+        service.approveBooking(booking1.getId(), userDto1.getId(), true);
+        service.approveBooking(booking2.getId(), userDto1.getId(), true);
+        service.approveBooking(booking3.getId(), userDto1.getId(), true);
+
+        bookings = service.getBookingsByUser(userDto2.getId(), BookingSearchStates.CURRENT);
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(1));
+        assertThat(bookings.get(0).getId(), equalTo(booking3.getId()));
+
+        bookings = service.getBookingsByUser(userDto2.getId(), BookingSearchStates.PAST);
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(1));
+        assertThat(bookings.get(0).getId(), equalTo(booking1.getId()));
+
+        bookings = service.getBookingsByUser(userDto2.getId(), BookingSearchStates.FUTURE);
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(1));
+        assertThat(bookings.get(0).getId(), equalTo(booking2.getId()));
+
+        service.approveBooking(booking2.getId(), userDto1.getId(), false);
+        bookings = service.getBookingsByUser(userDto2.getId(), BookingSearchStates.REJECTED);
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(1));
+        assertThat(bookings.get(0).getId(), equalTo(booking2.getId()));
+
     }
 
     @Test
@@ -189,5 +263,17 @@ public class BookingServiceImplTests {
         assertThat(bookings.get(0).getBooker().getId(), equalTo(userDto3.getId()));
         assertThat(bookings.get(0).getStart(), equalTo(newBookingDto3.getStart()));
         assertThat(bookings.get(0).getEnd(), equalTo(newBookingDto3.getEnd()));
+
+        service.approveBooking(booking3.getId(), userDto1.getId(), false);
+
+        bookings = service.getBookingsByItemOwner(userDto1.getId(), BookingSearchStates.REJECTED);
+
+        assertThat(bookings, notNullValue());
+        assertThat(bookings.size(), equalTo(1));
+        assertThat(bookings.get(0).getItem().getId(), equalTo(itemDto2.getId()));
+        assertThat(bookings.get(0).getBooker().getId(), equalTo(userDto3.getId()));
+        assertThat(bookings.get(0).getStart(), equalTo(newBookingDto3.getStart()));
+        assertThat(bookings.get(0).getEnd(), equalTo(newBookingDto3.getEnd()));
+
     }
 }
