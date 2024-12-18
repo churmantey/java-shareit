@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import static org.hamcrest.Matchers.notNullValue;
 public class UserServiceImplTests {
 
     private final EntityManager em;
-    private final UserService service;
+    private final UserServiceImpl service;
     private UserDto userDto;
     private UserDto userDto2;
     private UserDto updatedDto;

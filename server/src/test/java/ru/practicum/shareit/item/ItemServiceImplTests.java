@@ -11,14 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.NewBookingDto;
-import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingsDto;
 import ru.practicum.shareit.item.dto.NewCommentDto;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,9 +36,9 @@ import static org.hamcrest.Matchers.notNullValue;
 public class ItemServiceImplTests {
 
     private final EntityManager em;
-    private final ItemService service;
-    private final UserService userService;
-    private final BookingService bookingService;
+    private final ItemServiceImpl service;
+    private final UserServiceImpl userService;
+    private final BookingServiceImpl bookingService;
 
     private ItemDto itemDto1;
     private ItemDto itemDto2;

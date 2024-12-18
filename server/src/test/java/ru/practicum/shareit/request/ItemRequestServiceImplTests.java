@@ -11,9 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.NewItemRequestDto;
-import ru.practicum.shareit.request.service.ItemRequestService;
+import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,8 +30,8 @@ import static org.hamcrest.Matchers.*;
 public class ItemRequestServiceImplTests {
 
     private final EntityManager em;
-    private final ItemRequestService service;
-    private final UserService userService;
+    private final ItemRequestServiceImpl service;
+    private final UserServiceImpl userService;
 
     private UserDto userDto1;
     private UserDto userDto2;
