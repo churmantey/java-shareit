@@ -36,21 +36,20 @@ public class ItemServiceImplTests {
     private ItemDto itemDto2;
     private UserDto userDto;
 
+
     @BeforeEach
     public void setUp() {
-        userDto = new UserDto(1L, "Пётр Иванов", "some@email.com");
 
+        userDto = new UserDto(1L, "Пётр Иванов", "some@email.com");
         userDto = userService.createUser(userDto);
 
         itemDto1 = new ItemDto();
-        itemDto1.setId(1L);
         itemDto1.setName("first item");
         itemDto1.setDescription("first description");
         itemDto1.setAvailable(true);
         itemDto1.setOwner(userDto.getId());
 
         itemDto2 = new ItemDto();
-        itemDto2.setId(2L);
         itemDto2.setName("second item");
         itemDto2.setDescription("second description");
         itemDto2.setAvailable(true);
@@ -66,19 +65,18 @@ public class ItemServiceImplTests {
         assertThat(userItems, notNullValue());
         assertThat(userItems.size(), equalTo(0));
 
-
-        itemDto1 = service.createItem(itemDto1);
-        itemDto2 = service.createItem(itemDto2);
+        ItemDto storedItemDto1 = service.createItem(itemDto1);
+        ItemDto storedItemDto2 = service.createItem(itemDto2);
 
         userItems = query.setParameter("id", userDto.getId())
                 .getResultList();
 
         assertThat(userItems, notNullValue());
         assertThat(userItems.size(), equalTo(2));
-        assertThat(userItems.get(0).getId(), equalTo(itemDto1.getId()));
-        assertThat(userItems.get(0).getName(), equalTo(itemDto1.getName()));
-        assertThat(userItems.get(1).getId(), equalTo(itemDto2.getId()));
-        assertThat(userItems.get(1).getName(), equalTo(itemDto2.getName()));
+        assertThat(userItems.get(0).getId(), equalTo(storedItemDto1.getId()));
+        assertThat(userItems.get(0).getName(), equalTo(storedItemDto1.getName()));
+        assertThat(userItems.get(1).getId(), equalTo(storedItemDto2.getId()));
+        assertThat(userItems.get(1).getName(), equalTo(storedItemDto2.getName()));
     }
 
     @Test
@@ -111,7 +109,7 @@ public class ItemServiceImplTests {
         itemDto1 = service.createItem(itemDto1);
 
         ItemDto updatedItemDto = new ItemDto();
-        updatedItemDto.setName("updated name");
+        updatedItemDto.setName("updated item");
         updatedItemDto.setDescription("updated description");
         updatedItemDto.setOwner(itemDto1.getOwner());
         updatedItemDto.setId(itemDto1.getId());
@@ -128,8 +126,9 @@ public class ItemServiceImplTests {
 
     @Test
     public void findAvailableItemsByTextTest() {
-        itemDto1 = service.createItem(itemDto1);
-        itemDto2 = service.createItem(itemDto2);
+
+        ItemDto iwb1 = service.createItem(itemDto1);
+        ItemDto iwb2 = service.createItem(itemDto2);
 
         List<ItemDto> retrievedList = service.findAvailableItemsByText("item");
 
