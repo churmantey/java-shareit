@@ -12,9 +12,6 @@ import java.util.List;
 
 import static ru.practicum.shareit.general.Headers.USER_ID_HEADER;
 
-/**
- * TODO Sprint add-bookings.
- */
 @Slf4j
 @RestController
 @RequestMapping(path = "/bookings")

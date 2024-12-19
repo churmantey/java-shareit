@@ -15,9 +15,6 @@ import java.util.List;
 
 import static ru.practicum.shareit.general.Headers.USER_ID_HEADER;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @RequestMapping("/items")

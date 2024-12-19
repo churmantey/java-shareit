@@ -7,9 +7,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @Data
 @Entity
 @Table(name = "item_requests")

@@ -13,9 +13,6 @@ import ru.practicum.shareit.item.dto.NewCommentDto;
 
 import static ru.practicum.shareit.Headers.USER_ID_HEADER;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @Controller
 @RequestMapping("/items")

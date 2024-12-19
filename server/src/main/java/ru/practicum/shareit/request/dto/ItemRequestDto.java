@@ -18,6 +18,6 @@ public class ItemRequestDto {
 
     private LocalDateTime created;
 
-    List<ItemForRequestDto> items = new ArrayList<>();
+    private List<ItemForRequestDto> items = new ArrayList<>();
 
 }
